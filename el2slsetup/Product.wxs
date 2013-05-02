@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <?define fullName  = Event log to syslog ?>
   <?define InstallName  = el2sl ?>
   <?define InstallFolderName  = el2sl ?>
@@ -23,12 +23,12 @@
     
     <Package Keywords="Installer"
              Description="$(var.ProductName)"
-             InstallerVersion="200" 
+             InstallerVersion="200"
              Compressed="yes"
-             Platform="$(var.Platform)"/>
-
+            Platform="$(var.Platform)"/>
+    <!--InstallPrivileges="elevated"-->
     <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" CompressionLevel="high" />
-    
+    <!--<Property Id="MSIUSEREALADMINDETECTION" Value="1" />-->
     <!--<Upgrade Id="2551D901-A700-484b-B35C-B8E3D358FE73">
       <UpgradeVersion Minimum="1.2.0" IncludeMinimum="yes" Maximum="1.2.1" Property="OLDERVERSIONBEINGUPGRADED"/>
       <UpgradeVersion Minimum="1.2.1" OnlyDetect="yes" Property="NEWERVERSIONDETECTED"/>
@@ -37,12 +37,16 @@
     <Condition Message="A later version of [ProductName] is already installed. Setup will now exit">
       NOT NEWERVERSIONDETECTED OR Installed
     </Condition>
-    
+
+    <!--<Condition Message="You need to be an administrator to install el2sl. Setup will now exit">
+      Privileged
+    </Condition>-->
+
     <!-- Program Files \ App \  -->
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$(var.PlatformProgramFilesFolder)">
         <Directory Id="INSTALLLOCATION" Name="$(var.InstallFolderName)">
-          <Directory Id="APPLICATIONROOTDIRECTORY" Name="$(var.InstallFolderName)"/>
+          <!--<Directory Id="APPLICATIONROOTDIRECTORY" Name="$(var.InstallFolderName)"/>-->
         </Directory>
       </Directory>
       <!-- Start Program menu -->
@@ -52,18 +56,20 @@
     </Directory>
     
     <!-- Files in app path -->
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+    <DirectoryRef Id="INSTALLLOCATION">
       <Component Id='el2slconf' Guid='9D181A16-5383-45b8-9D13-A0781060CA16'>
         <?if $(var.Platform) = x64 ?>
           <File Id='Bng.EL2SL.Configurator.exe'
                 Name='Bng.EL2SL.Configurator.exe'
                 DiskId='1'
-                Source='..\el2slconf\bin\x64\Release\Bng.EL2SL.Configurator.exe'/>
+                Vital="yes"
+                Source='..\el2slconf\bin\x64\Bng.EL2SL.Configurator.exe'/>
         <?else ?>
           <File Id='Bng.EL2SL.Configurator.exe'
                 Name='Bng.EL2SL.Configurator.exe'
                 DiskId='1'
-                Source='..\el2slconf\bin\x86\Release\Bng.EL2SL.Configurator.exe'/>
+                Vital="yes"
+                Source='..\el2slconf\bin\x86\Bng.EL2SL.Configurator.exe'/>
         <?endif ?>
       </Component>
       <Component Id='el2slconfigs' Guid='9D181A16-5383-45b8-9D13-A0781060CA17'>
@@ -71,12 +77,14 @@
           <File Id="Bng.Configs.dll"
                 Name="Bng.Configs.dll"
                 DiskId="1"
-                Source="..\configuration\bin\x64\Release\Bng.Configs.dll"/>
+                Vital="yes"
+                Source="..\configuration\bin\x64\Bng.Configs.dll"/>
         <?else ?>
           <File Id="Bng.Configs.dll"
                 Name="Bng.Configs.dll"
                 DiskId="1"
-                Source="..\configuration\bin\x86\Release\Bng.Configs.dll"/>
+                Vital="yes"
+                Source="..\configuration\bin\x86\Bng.Configs.dll"/>
         <?endif ?>
       </Component>
       <Component Id='el2slbase' Guid='9D181A16-5383-45b8-9D13-A0781060CA18'>
@@ -84,12 +92,14 @@
           <File Id="Bng.EL2SL.Base.dll"
                 Name="Bng.EL2SL.Base.dll"
                 DiskId="1"
-                Source="..\el2slbase\bin\x64\Release\Bng.EL2SL.Base.dll"/>
+                Vital="yes"
+                Source="..\el2slbase\bin\x64\Bng.EL2SL.Base.dll"/>
         <?else ?>
           <File Id="Bng.EL2SL.Base.dll"
                 Name="Bng.EL2SL.Base.dll"
                 DiskId="1"
-                Source="..\el2slbase\bin\x86\Release\Bng.EL2SL.Base.dll"/>
+                Vital="yes"
+                Source="..\el2slbase\bin\x86\Bng.EL2SL.Base.dll"/>
         <?endif ?>
       </Component>
       <Component Id="el2slservice">
@@ -97,25 +107,38 @@
         <File Id="Bng.EL2SL.Service.exe"
               Name="Bng.EL2SL.Service.exe"
               DiskId="1"
-              Source="..\el2slservice\bin\x64\Release\Bng.EL2SL.Service.exe"/>
+              Vital="yes"
+              Source="..\el2slservice\bin\x64\Bng.EL2SL.Service.exe"/>
         <?else ?>
         <File Id="Bng.EL2SL.Service.exe"
               Name="Bng.EL2SL.Service.exe"
               DiskId="1"
-              Source="..\el2slservice\bin\x86\Release\Bng.EL2SL.Service.exe"/>
+              Vital="yes"
+              Source="..\el2slservice\bin\x86\Bng.EL2SL.Service.exe"/>
         <?endif ?>
         <ServiceInstall
 					Id="ServiceInstaller"
 					Type="ownProcess"
 					Vital="yes"
 					Name="el2sl"
-					DisplayName="EL2SL Sender"
+					DisplayName="EL2SL Service"
 					Description="Service send windows event logs to linux syslog"
 					Start="auto"
 					Account="LocalSystem"
 					ErrorControl="ignore"
-					Interactive="no"
-              >
+					Interactive="no">
+          <!-- <util:PermissionEx
+              User="Authenticated Users"
+              GenericAll="yes"
+              ServiceChangeConfig="yes"
+              ServiceEnumerateDependents="yes"
+              ChangePermission="yes"
+              ServiceInterrogate="yes"
+              ServicePauseContinue="yes"
+              ServiceQueryConfig="yes"
+              ServiceQueryStatus="yes"
+              ServiceStart="yes"
+              ServiceStop="yes" /> -->
         </ServiceInstall>
         <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="el2sl" Wait="yes" />
       </Component>
@@ -125,10 +148,10 @@
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="el2slconfApplicationShortcut" Guid="953BEB35-E0BB-40ae-A1C8-F8A88E1E2529">
         <Shortcut Id="ApplicationStartMenuShortcut" 
-                  Name="Configurator" 
+                  Name="el2sl Configurator" 
                   Description="Configurator for el2sl"
-                  Target="[APPLICATIONROOTDIRECTORY]Bng.EL2SL.Configurator.exe"
-                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+                  Target="[INSTALLLOCATION]Bng.EL2SL.Configurator.exe"
+                  WorkingDirectory="INSTALLLOCATION"/>
         <Shortcut Id="Uninstall"
                   Name="Uninstall $(var.fullName)"
                   Target="[System64Folder]msiexec.exe"
@@ -151,7 +174,7 @@
              Title="el2sl" 
              Level="1"
              Description="The complete package"
-             Display="expand" ConfigurableDirectory="APPLICATIONROOTDIRECTORY" >
+             Display="expand" ConfigurableDirectory="INSTALLLOCATION" >
       <Feature Id="MainProgram" 
                Title="Program" 
                Description="The main executable" Level="1">

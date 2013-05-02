@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 using Bng.EL2SL.Base;
@@ -69,9 +70,9 @@ namespace Bng.EL2SL.Configurator
             for ( int fh = 0; fh < SFacilityes.Length; fh++ ) // columns
             {
                 tlpFacilityPriority.ColumnCount++;
-                RotatedLabel lColumn = new RotatedLabel();
-                lColumn.NewText = SFacilityes[fh];
-                lColumn.RotateAngle = -90;
+                VerticalLabel lColumn = new VerticalLabel();
+                lColumn.Text = SFacilityes[fh];
+                //lColumn.TextAlign = ContentAlignment.BottomCenter;
                 tlpFacilityPriority.Controls.Add(lColumn, tlpFacilityPriority.ColumnCount - 1, 0);
             }
 

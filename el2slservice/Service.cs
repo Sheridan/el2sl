@@ -26,7 +26,7 @@ namespace Bng.EL2SL.Service
                 _sManager = null;
                 GC.Collect();
             }
-            catch (SystemException e)
+            catch (SystemException)
             {
             }
         }

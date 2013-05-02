@@ -40,13 +40,14 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpFacilityPriority.AutoSize = true;
+            this.tlpFacilityPriority.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
             this.tlpFacilityPriority.ColumnCount = 1;
             this.tlpFacilityPriority.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpFacilityPriority.Location = new System.Drawing.Point(12, 64);
             this.tlpFacilityPriority.Margin = new System.Windows.Forms.Padding(1);
             this.tlpFacilityPriority.Name = "tlpFacilityPriority";
             this.tlpFacilityPriority.RowCount = 1;
-            this.tlpFacilityPriority.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpFacilityPriority.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpFacilityPriority.Size = new System.Drawing.Size(449, 280);
             this.tlpFacilityPriority.TabIndex = 0;
             // 

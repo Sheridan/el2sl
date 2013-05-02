@@ -35,6 +35,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.tbHost = new System.Windows.Forms.TextBox();
+            this.bExport = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudPort)).BeginInit();
             this.SuspendLayout();
             // 
@@ -68,6 +69,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpJournals.AutoSize = true;
+            this.tlpJournals.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Inset;
             this.tlpJournals.ColumnCount = 1;
             this.tlpJournals.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpJournals.Location = new System.Drawing.Point(12, 9);
@@ -132,6 +134,18 @@
             this.tbHost.TabIndex = 34;
             this.tbHost.TextChanged += new System.EventHandler(this.tbHost_TextChanged);
             // 
+            // bExport
+            // 
+            this.bExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.bExport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.bExport.Location = new System.Drawing.Point(13, 349);
+            this.bExport.Name = "bExport";
+            this.bExport.Size = new System.Drawing.Size(75, 23);
+            this.bExport.TabIndex = 38;
+            this.bExport.Text = "Export config";
+            this.bExport.UseVisualStyleBackColor = true;
+            this.bExport.Click += new System.EventHandler(this.bExport_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -139,6 +153,7 @@
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(703, 384);
+            this.Controls.Add(this.bExport);
             this.Controls.Add(this.nudPort);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -165,6 +180,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox tbHost;
+        private System.Windows.Forms.Button bExport;
     }
 }
 

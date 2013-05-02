@@ -42,5 +42,10 @@ namespace Bng.EL2SL.Base
         {
             _registry.Write(eventLog.Log, eventLogEntryType.ToString() + "FP", sfpp.AsInt());
         }
+
+        public void Export(string fileName)
+        {
+            _registry.Export(fileName);
+        }
     }
 }

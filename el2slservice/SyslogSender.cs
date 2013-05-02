@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using System.Net.Sockets;
 using System.Diagnostics;
@@ -6,25 +7,25 @@ using Bng.EL2SL.Base;
 
 namespace Bng.EL2SL.Service
 {
-    
-    class SyslogSender
-    {
-        private UdpClient _udpClient;
-        private EventLog _eventLog;
-        private EventLog _localLog;
-        private El2SlConfig _config;
-        private UTF8Encoding _encoding;
-        private CultureInfo _enUS;
 
-        public SyslogSender(El2SlConfig config, EventLog el, EventLog localLog)
+    class SyslogSender : IDisposable
+    {
+        private UdpClient    _udpClient;
+        private EventLog     _eventLog;
+        private EventLog     _localLog;
+        private El2SlConfig  _config;
+        private UTF8Encoding _encoding;
+        private CultureInfo  _enUS;
+
+        public SyslogSender(El2SlConfig config, EventLog eventLog, EventLog localLog)
         {
-            _enUS = new System.Globalization.CultureInfo("en-US");
+            _enUS = new CultureInfo("en-US");
             _localLog = localLog;
-            _config = config;
-            _eventLog = el;
+            _config   = config;
+            _eventLog = eventLog;
             _encoding = new UTF8Encoding();
             _eventLog.EnableRaisingEvents = true;
-            _eventLog.EntryWritten += new EntryWrittenEventHandler(eventLog_EntryWritten);
+            _eventLog.EntryWritten += eventLog_EntryWritten;
             _udpClient = new UdpClient();
             _udpClient.DontFragment = false;
             _udpClient.Connect(_config.Host, _config.Port);
@@ -32,7 +33,9 @@ namespace Bng.EL2SL.Service
             {
                 if (_udpClient.Client.Connected)
                 {
-                    _localLog.WriteEntry("el2slservice connected to syslog", EventLogEntryType.Information);
+                    _localLog.WriteEntry(
+                        string.Format("el2slservice connected to syslog for send events of {0}",_eventLog.LogDisplayName), 
+                        EventLogEntryType.Information);
                 }
             }
             catch (SocketException se)
@@ -57,6 +60,13 @@ namespace Bng.EL2SL.Service
                 byte[] data = _encoding.GetBytes(logString);
                 _udpClient.Send(data, data.Length);
             }
+        }
+
+        public void Dispose()
+        {
+            _eventLog.EntryWritten -= eventLog_EntryWritten;
+            _udpClient.Close();
+            GC.SuppressFinalize(this);
         }
     }
 }

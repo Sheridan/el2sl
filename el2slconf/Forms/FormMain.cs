@@ -22,12 +22,9 @@ namespace Bng.EL2SL.Configurator
             foreach (EventLogEntryType et in Enum.GetValues(typeof (EventLogEntryType))) // columns
             {
                 tlpJournals.ColumnCount++;
-                RotatedLabel jLevels = new RotatedLabel();
-                jLevels.TextAlign = ContentAlignment.MiddleLeft;
-                jLevels.NewText = et.ToString();
-                jLevels.RotateAngle = -90;
+                VerticalLabel jLevels = new VerticalLabel();
+                jLevels.Text = et.ToString();
                 tlpJournals.Controls.Add(jLevels, tlpJournals.ColumnCount - 1, 0);
-                
             }
 
             #endregion
@@ -85,6 +82,18 @@ namespace Bng.EL2SL.Configurator
         private void nudPort_ValueChanged(object sender, EventArgs e)
         {
             _config.Port = (int)nudPort.Value;
+        }
+
+        private void bExport_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dlg = new SaveFileDialog();
+            dlg.Filter = @"reg files (*.reg)|*.reg|All files (*.*)|*.*";
+            dlg.FilterIndex = 1;
+            dlg.RestoreDirectory = true;
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                _config.Export(dlg.FileName);
+            }
         }
 
     }

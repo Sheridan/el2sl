@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
 using Microsoft.Win32;
+using System.Security;
+using System.Security.AccessControl;
 
 namespace Bng.Configs.Registry
 {
@@ -15,6 +17,13 @@ namespace Bng.Configs.Registry
         public RegistryConfig(string registryPath)
         {
             _registryPath = registryPath;
+            /*RegistrySecurity rs = new RegistrySecurity();
+            rs.AddAccessRule(new RegistryAccessRule(Environment.UserDomainName,
+                        RegistryRights.ReadKey | RegistryRights.Delete,
+                        InheritanceFlags.None,
+                        PropagationFlags.None,
+                        AccessControlType.Allow));
+            _registryKey.SetAccessControl(Registryse);*/
         }
 
         #region Operations
